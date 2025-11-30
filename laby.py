@@ -2,6 +2,20 @@ import tkinter as Tk
 import random
 from tkinter import font
 
+#fonction de génération de labyrinthe(pas finis)
+def exploration_sidewinder(grille):
+    for i in range(grille.l):
+        deb_parcour = 0
+        for j in range(grille.c):
+            destroy = randint(0, 1)
+            if (destroy == 0 and j < grille.c-1) or (i == grille.l - 1 and j < grille.c-1):
+                grille.effaceMur('E', (i, j))
+            elif i < grille.l - 1:
+                k = randint(deb_parcour, j)
+                grille.effaceMur('S', (i, k))
+                deb_parcour = j+1
+    return grille
+
 # Création de la fenêtre
 
 root = Tk.Tk()
@@ -119,4 +133,5 @@ dessiner_grillage()
 
 
 # Lancement de la boucle principale
+
 root.mainloop()
