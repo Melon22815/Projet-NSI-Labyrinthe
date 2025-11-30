@@ -1,0 +1,122 @@
+import tkinter as Tk
+import random
+from tkinter import font
+
+# Création de la fenêtre
+
+root = Tk.Tk()
+
+root.title("Générateur et solveur de labyrinthe")
+root.geometry("600x600")
+root.resizable(False, False)
+
+# Changement du curseur de la fenêtre
+
+crosshair = "crosshair"
+root.config(cursor=crosshair)
+
+root.config(
+    bg="#f0f0f0",
+    padx=15,
+    pady=15
+)
+
+# Création du canevas pour dessiner le labyrinthe
+
+canvas = Tk.Canvas(root, width=600, height=600, bg="white")
+canvas.pack()
+canvas.configure(bg="#fffaf0")
+
+# CSS détaillé pour le canevas
+
+canvas.config(
+    borderwidth=5,
+    relief="ridge",
+    highlightthickness=3,
+    highlightbackground="#444444",
+    highlightcolor="#ff6600"
+)
+
+# Titre du labyrithe en haut au milieu du Tkinter
+
+title_label = Tk.Label(root, text="Générateur et solveur de labyrinthe")
+title_label.place(x=300, y=10, anchor="n")
+
+# CSS détaillé et complexe du titre
+
+title_label.config(
+    fg="#333333",
+    bg="#f0f0f0",
+    padx=10,
+    pady=5,
+    borderwidth=2,
+    relief="groove",
+    font=("Helvetica", 16, "underline", "bold", "italic"),
+    highlightthickness=2,
+    highlightbackground="#666666",
+    highlightcolor="#ff6600",
+    )
+
+# Animation simple pour le titre (changement de couleur toutes les 0,5 secondes)
+def animation_titre():
+    current_color = title_label.cget("fg")
+    new_color = "#ff6600" if current_color == "#333333" else "#333333"
+    title_label.config(fg=new_color)
+    root.after(500, animation_titre)
+animation_titre()
+
+def close_window(event=None):
+    root.destroy()
+root.bind('<Alt-F4>', close_window)
+
+# Création de la barre de menu
+
+menu_bar = Tk.Menu(root)
+file_menu = Tk.Menu(menu_bar, tearoff=0)
+file_menu.add_command(label="Quitter", command=close_window)
+file_menu.add_command(label="Relancer le programme", command=lambda: root.destroy() or __import__('laby'))
+menu_bar.add_cascade(label="Fichier", menu=file_menu)
+root.config(menu=menu_bar)
+
+# Carré qui sera le labyrinthe (placé au milieu du canevas)
+
+carre_labyrinthe = canvas.create_rectangle(100, 100, 500, 500, fill="#ffffff", outline="#333333", width=3)
+
+# Créer un bouton en bas du carré labyrinthe pour générer le labyrinthe
+
+bouton = Tk.Button(root, text="Générer le labyrinthe", command=lambda: print("Génération du labyrinthe..."))
+bouton.place(x=295, y=520, anchor="n")
+
+# Personnalisation du bouton
+
+bouton.config(
+    fg="#000000",
+    bg="#f0f0f0",
+    padx=10,
+    pady=5,
+    borderwidth=2,
+    relief="raised",
+    font=("Helvetica", 12, "bold", "italic"),
+    activebackground="#fffaf0",
+    activeforeground="#000000",
+    highlightthickness=2,
+    highlightbackground="#444444",
+    highlightcolor="#ff6600",
+    takefocus=True
+)
+
+# Le grillage est en premier plan en rapport aux boutons. Il faut donc le dessiner après avoir dessiné l'entrée et la sortie.
+
+def dessiner_grillage():
+    for i in range(0, 401, 20):
+        canvas.create_line(99 + i, 99, 99 + i, 499, fill="#dddddd")
+        canvas.create_line(99, 99 + i, 499, 99 + i, fill="#dddddd")
+    canvas.create_line(99, 99, 99, 499, fill="#dddddd")
+    canvas.create_line(99, 99, 499, 99, fill="#dddddd")
+    canvas.create_line(99, 499, 499, 499, fill="#dddddd")
+    canvas.create_line(499, 99, 499, 499, fill="#dddddd")
+dessiner_grillage()
+
+
+# Lancement de la boucle principale
+root.mainloop()
