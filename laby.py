@@ -88,6 +88,9 @@ def exploration_sidewinder(grille):
                 grille.effaceMur('S', (i, k))
                 deb_parcour = j+1
     return grille
+
+labyrinthe = exploration_sidewinder(Grille(20, 20))
+
 # Création de la fenêtre.
 root = Tk.Tk()
 root.title("Générateur et solveur de labyrinthe")
@@ -144,12 +147,13 @@ menu_bar = Tk.Menu(root)
 file_menu = Tk.Menu(menu_bar, tearoff=0)
 file_menu.add_command(label="Quitter", command=close_window)
 file_menu.add_command(label="Relancer le programme", command=lambda: root.destroy() or __import__('laby'))
+file_menu.add_command(label="Générer un labyrinthe", command=lambda: dessiner_grillage(exploration_sidewinder(Grille(20, 20))))
 menu_bar.add_cascade(label="Fichier", menu=file_menu)
 root.config(menu=menu_bar)
 # Le carré du labyrinthe.
 carre_labyrinthe = canvas.create_rectangle(100, 100, 500, 500, fill="#ffffff", outline="#333333", width=3)
 # Un bouton qui génène-ra le labyrinthe.
-bouton = Tk.Button(root, text="Générer le labyrinthe", command=lambda: print("Génération du labyrinthe..."))
+bouton = Tk.Button(root, text="Générer le labyrinthe", command=lambda: dessiner_grillage(exploration_sidewinder(Grille(20, 20))))
 bouton.place(x=295, y=520, anchor="n")
 # Personnalisation du bouton.
 bouton.config(
@@ -168,14 +172,26 @@ bouton.config(
     takefocus=True
 )
 # Le grillage du labyrinthe :
-def dessiner_grillage():
-    for i in range(0, 401, 20):
-        canvas.create_line(99 + i, 99, 99 + i, 499, fill="#dddddd")
-        canvas.create_line(99, 99 + i, 499, 99 + i, fill="#dddddd")
-    canvas.create_line(99, 99, 99, 499, fill="#dddddd")
-    canvas.create_line(99, 99, 499, 99, fill="#dddddd")
-    canvas.create_line(99, 499, 499, 499, fill="#dddddd")
-    canvas.create_line(499, 99, 499, 499, fill="#dddddd")
-dessiner_grillage()
+def dessiner_grillage(grille):
+    # fonction qui permet de tracer les murs du labyrinthe avec une marge de 99px et 
+    # de longueur 20px en fonction du nombre de colonne et de lignes du labyrinthe
+    for i in range(0, grille.l * 20, 20):
+        for j in range(0, grille.c * 20, 20):
+            if grille.cellule(int(i/20), int(j/20)).murs['E']:
+                canvas.create_line(j + 99 + 20, i + 99, j + 20 + 99, i + 20 + 99, fill="#000000")
+            else:
+                canvas.create_line(j + 20 + 99, i + 99, j + 20 + 99, i + 20 + 99, fill="#FFFFFF")
+            if grille.cellule(int(i/20), int(j/20)).murs["S"]:
+                canvas.create_line(j + 99, i + 20 + 99, j + 20 + 99, i + 20 + 99, fill="#000000")
+            else:
+                canvas.create_line(j + 99, i + 20 + 99, j + 20 + 99, i + 20 + 99, fill="#FFFFFF")
+           
+    canvas.create_line(99, 99, 99, 499, fill="#ffffff")
+    canvas.create_line(99, 99, 499, 99, fill="#ffffff")
+    canvas.create_line(99, 499, 499, 499, fill="#ffffff")
+    canvas.create_line(499, 99, 499, 499, fill="#ffffff")
+
+dessiner_grillage(labyrinthe)
 # Lancement de la boucle.
 root.mainloop()
+
